@@ -1,0 +1,93 @@
+ 
+ import java.util.Arrays;
+import java.util.Comparator;
+class Book {
+    int bookId;
+    String title;
+    String author;
+
+    public Book(int bookId, String title, String author) {
+        this.bookId = bookId;
+        this.title = title;
+        this.author = author;
+    }
+
+    public String toString() {
+        return "BookID: " + bookId + ", Title: " + title + ", Author: " + author;
+    }
+}
+
+ class BookManager {
+    Book[] books;
+    int size;
+
+    public BookManager(int capacity) {
+        books = new Book[capacity];
+        size = 0;
+    }
+
+    public void addBook(Book book) {
+        if (size < books.length) {
+            books[size++] = book;
+        } else {
+            System.out.println("Library is full.");
+        }
+    }
+    public Book linearSearchByTitle(String title) {
+        for (int i = 0; i < size; i++) {
+            if (books[i].title.equalsIgnoreCase(title)) {
+                return books[i];
+            }
+        }
+        return null;
+    }
+    public Book binarySearchByTitle(String title) {
+        Arrays.sort(books, 0, size, Comparator.comparing(b -> b.title.toLowerCase()));
+
+        int left = 0;
+        int right = size - 1;
+
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            int comparison = books[mid].title.compareToIgnoreCase(title);
+
+            if (comparison == 0) {
+                return books[mid];
+            } else if (comparison < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return null;
+    }
+
+    public void listAllBooks() {
+        for (int i = 0; i < size; i++) {
+            System.out.println(books[i]);
+        }
+    }
+}
+public class LibraryManagement {
+    public static void main(String[] args) {
+        BookManager manager = new BookManager(10);
+
+        manager.addBook(new Book(1, "The Alchemist", "Paulo Coelho"));
+        manager.addBook(new Book(2, "Rich Dad Poor Dad", "Robert Kiyosaki"));
+        manager.addBook(new Book(3, "The Power of Habit", "Charles Duhigg"));
+        manager.addBook(new Book(4, "Clean Code", "Robert C. Martin"));
+
+        System.out.println("📚 All Books:");
+        manager.listAllBooks();
+
+        System.out.println("\n🔍 Linear Search for 'Clean Code':");
+        Book foundLinear = manager.linearSearchByTitle("Clean Code");
+        System.out.println(foundLinear != null ? foundLinear : "Book not found");
+
+        System.out.println("\n🔍 Binary Search for 'Clean Code':");
+        Book foundBinary = manager.binarySearchByTitle("Clean Code");
+        System.out.println(foundBinary != null ? foundBinary : "Book not found");
+    }
+}
+
