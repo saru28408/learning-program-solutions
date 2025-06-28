@@ -1,0 +1,18 @@
+package com.example;
+
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class InteractionTest {
+
+    @Test
+    public void testVerifyInteraction() {
+        MyApiInterface mockApi = mock(MyApiInterface.class);
+        MyServiceImpl service = new MyServiceImpl(mockApi);
+        service.fetchData();
+        verify(mockApi).getData();
+    }
+}
+ 

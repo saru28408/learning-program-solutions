@@ -1,0 +1,48 @@
+ CREATE OR REPLACE PROCEDURE TransferFunds(
+  2      p_from_account NUMBER,
+  3      p_to_account NUMBER,
+  4      p_amount NUMBER
+  5  ) IS
+  6      v_balance NUMBER;
+  7  BEGIN
+  8      -- 1. Get current balance of source account
+  9      SELECT Balance INTO v_balance
+ 10      FROM Accounts
+ 11      WHERE AccountID = p_from_account;
+ 12
+ 13      -- 2. Check if balance is sufficient
+ 14      IF v_balance < p_amount THEN
+ 15          RAISE_APPLICATION_ERROR(-20001, 'Insufficient funds.');
+ 16      END IF;
+ 17
+ 18      -- 3. Deduct amount from source account
+ 19      UPDATE Accounts
+ 20      SET Balance = Balance - p_amount,
+ 21          LastModified = SYSDATE
+ 22      WHERE AccountID = p_from_account;
+ 23
+ 24      -- 4. Add amount to destination account
+ 25      UPDATE Accounts
+ 26      SET Balance = Balance + p_amount,
+ 27          LastModified = SYSDATE
+ 28      WHERE AccountID = p_to_account;
+ 29
+ 30      -- 5. Log transaction: from source account
+ 31      INSERT INTO Transactions (TransactionID, AccountID, TransactionDate, Amount, TransactionType)
+ 32      VALUES (Transactions_SEQ.NEXTVAL, p_from_account, SYSDATE, p_amount, 'Transfer Out');
+ 33
+ 34      -- 6. Log transaction: to destination account
+ 35      INSERT INTO Transactions (TransactionID, AccountID, TransactionDate, Amount, TransactionType)
+ 36      VALUES (Transactions_SEQ.NEXTVAL, p_to_account, SYSDATE, p_amount, 'Transfer In');
+ 37
+ 38      -- 7. Commit all changes
+ 39      COMMIT;
+ 40
+ 41  EXCEPTION
+ 42      WHEN OTHERS THEN
+ 43          ROLLBACK;
+ 44          DBMS_OUTPUT.PUT_LINE('Transfer Failed: ' || SQLERRM);
+ 45  END;
+ 46  /
+ EXEC TransferFunds(1, 2, 200);
+SELECT * FROM Accounts;
