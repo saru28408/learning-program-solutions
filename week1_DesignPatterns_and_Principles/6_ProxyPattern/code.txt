@@ -1,0 +1,61 @@
+
+
+public class ProxyPatternExample{
+
+    interface Image {
+        void display();
+    }
+    static class RealImage implements Image {
+        private String filename;
+
+        public RealImage(String filename) {
+            this.filename = filename;
+            loadFromRemoteServer();
+        }
+
+        private void loadFromRemoteServer() {
+            System.out.println("Loading image from remote server: " + filename);
+        }
+
+        @Override
+        public void display() {
+            System.out.println("Displaying image: " + filename);
+        }
+    }
+
+    static class ProxyImage implements Image {
+        private String filename;
+        private RealImage realImage;
+
+        public ProxyImage(String filename) {
+            this.filename = filename;
+        }
+
+        @Override
+        public void display() {
+            if (realImage == null) {
+                realImage = new RealImage(filename); 
+            } else {
+                System.out.println("Using cached image: " + filename);
+            }
+            realImage.display();
+        }
+    }
+
+    public static void main(String[] args) {
+        Image img1 = new ProxyImage("nature.jpg");
+        Image img2 = new ProxyImage("city.png");
+
+        System.out.println("First call to img1:");
+        img1.display();
+
+        System.out.println("\nSecond call to img1:");
+        img1.display(); 
+
+        System.out.println("\nFirst call to img2:");
+        img2.display(); 
+
+        System.out.println("\nSecond call to img2:");
+        img2.display(); 
+    }
+}

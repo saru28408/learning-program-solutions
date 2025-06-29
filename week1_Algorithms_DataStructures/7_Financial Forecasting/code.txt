@@ -1,0 +1,46 @@
+ class FinancialForecast {
+    public double futureValueRecursive(double presentValue, double growthRate, int years) {
+        if (years == 0) {
+            return presentValue;
+        }
+        return (1 + growthRate) * futureValueRecursive(presentValue, growthRate, years - 1);
+    }
+    public double futureValueMemo(double presentValue, double growthRate, int years, double[] memo) {
+        if (years == 0) return presentValue;
+        if (memo[years] != 0) return memo[years];
+
+        memo[years] = (1 + growthRate) * futureValueMemo(presentValue, growthRate, years - 1, memo);
+        return memo[years];
+    }
+    public double futureValueIterative(double presentValue, double growthRate, int years) {
+        double result = presentValue;
+        for (int i = 0; i < years; i++) {
+            result *= (1 + growthRate);
+        }
+        return result;
+    }
+}
+
+public class FinancialForecasting{
+    public static void main(String[] args) {
+        FinancialForecast forecast = new FinancialForecast();
+
+        double presentValue = 10000;     
+        double growthRate = 0.10;        
+        int years = 5;
+
+        System.out.println("Recursive Forecast:");
+        double resultRecursive = forecast.futureValueRecursive(presentValue, growthRate, years);
+        System.out.printf("Future Value after %d years = ₹%.2f\n", years, resultRecursive);
+
+        System.out.println("\nMemoized Forecast:");
+        double[] memo = new double[years + 1];
+        double resultMemo = forecast.futureValueMemo(presentValue, growthRate, years, memo);
+        System.out.printf("Future Value after %d years = ₹%.2f\n", years, resultMemo);
+
+        System.out.println("\nIterative Forecast:");
+        double resultIterative = forecast.futureValueIterative(presentValue, growthRate, years);
+        System.out.printf("Future Value after %d years = ₹%.2f\n", years, resultIterative);
+    }
+}
+

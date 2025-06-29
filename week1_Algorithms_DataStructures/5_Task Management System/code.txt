@@ -1,0 +1,108 @@
+ class Task {
+    int taskId;
+    String taskName;
+    String status;
+
+    public Task(int taskId, String taskName, String status) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskID: " + taskId + ", Name: " + taskName + ", Status: " + status;
+    }
+}
+class TaskNode {
+    Task task;
+    TaskNode next;
+
+    public TaskNode(Task task) {
+        this.task = task;
+        this.next = null;
+    }
+}
+
+ class TaskManager {
+    private TaskNode head;
+    public void addTask(Task task) {
+        TaskNode newNode = new TaskNode(task);
+        if (head == null) {
+            head = newNode;
+        } else {
+            TaskNode current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        System.out.println("Task added: " + task.taskName);
+    }
+    public Task searchTask(int taskId) {
+        TaskNode current = head;
+        while (current != null) {
+            if (current.task.taskId == taskId) {
+                return current.task;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+    public void listTasks() {
+        if (head == null) {
+            System.out.println("No tasks found.");
+            return;
+        }
+        TaskNode current = head;
+        while (current != null) {
+            System.out.println(current.task);
+            current = current.next;
+        }
+    }
+    public void deleteTask(int taskId) {
+        if (head == null) {
+            System.out.println("No tasks to delete.");
+            return;
+        }
+        if (head.task.taskId == taskId) {
+            head = head.next;
+            System.out.println("Task deleted.");
+            return;
+        }
+
+        TaskNode current = head;
+        while (current.next != null && current.next.task.taskId != taskId) {
+            current = current.next;
+        }
+
+        if (current.next == null) {
+            System.out.println("Task not found.");
+        } else {
+            current.next = current.next.next;
+            System.out.println("Task deleted.");
+        }
+    }
+}
+public class TaskManagementSystem {
+    public static void main(String[] args) {
+        TaskManager manager = new TaskManager();
+
+        manager.addTask(new Task(1, "Design UI", "Pending"));
+        manager.addTask(new Task(2, "Develop Backend", "In Progress"));
+        manager.addTask(new Task(3, "Testing", "Not Started"));
+
+        System.out.println("\nAll Tasks:");
+        manager.listTasks();
+
+        System.out.println("\nSearching for Task ID 2:");
+        Task found = manager.searchTask(2);
+        System.out.println(found != null ? found : "Task not found.");
+
+        System.out.println("\nDeleting Task ID 2:");
+        manager.deleteTask(2);
+
+        System.out.println("\nAll Tasks After Deletion:");
+        manager.listTasks();
+    }
+}

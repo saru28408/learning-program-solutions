@@ -1,0 +1,55 @@
+interface CustomerRepository {
+ Customer findCustomerById(String customerId);
+}
+class CustomerRepositoryImpl implements CustomerRepository {
+ @Override
+ public Customer findCustomerById(String customerId) {
+     return new Customer(customerId, "Alice", "alice@example.com");
+ }
+}
+
+class Customer {
+ private String id;
+ private String name;
+ private String email;
+
+ public Customer(String id, String name, String email) {
+     this.id = id;
+     this.name = name;
+     this.email = email;
+ }
+
+ public void display() {
+     System.out.println("=== Customer Details ===");
+     System.out.println("ID    : " + id);
+     System.out.println("Name  : " + name);
+     System.out.println("Email : " + email);
+ }
+}
+
+class CustomerService {
+ private CustomerRepository repository;
+
+ public CustomerService(CustomerRepository repository) {
+     this.repository = repository;
+ }
+
+ public void getCustomerInfo(String customerId) {
+     Customer customer = repository.findCustomerById(customerId);
+     if (customer != null) {
+         customer.display();
+     } else {
+         System.out.println("Customer not found.");
+     }
+ }
+}
+
+public class DependencyInjectionExample {
+ public static void main(String[] args) {
+     CustomerRepository repository = new CustomerRepositoryImpl();
+
+     CustomerService service = new CustomerService(repository);
+
+     service.getCustomerInfo("C001");
+ }
+}
