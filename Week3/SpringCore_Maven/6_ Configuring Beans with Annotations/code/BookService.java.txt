@@ -1,0 +1,25 @@
+package com.library.service;
+
+import org.springframework.stereotype.Service;
+import com.library.repository.BookRepository;
+
+import java.util.List;
+
+@Service
+public class BookService {
+
+    private BookRepository bookRepository;
+
+    public void setBookRepository(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    public void getAllBooks() {
+        List<String> books = bookRepository.findAllBooks();
+        books.forEach(System.out::println);
+    }
+}

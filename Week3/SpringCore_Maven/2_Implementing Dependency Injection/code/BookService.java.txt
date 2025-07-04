@@ -1,0 +1,18 @@
+package Library.LibraryManagementProject;
+
+import Library.LibraryManagementProject.BookRepository;
+
+public class BookService {
+
+    private BookRepository bookRepository;
+
+ 
+    public void setBookRepository(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    public void issueBook(String title) {
+        System.out.println("Issuing book: " + title);
+        bookRepository.saveBook(title);
+    }
+}

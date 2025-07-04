@@ -1,0 +1,7 @@
+package Library.LibraryManagementProject;
+
+public class BookRepository {
+    public String getBookInfo() {
+        return "Java Programming by Saru Bala";
+    }
+}
